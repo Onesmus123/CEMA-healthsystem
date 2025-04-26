@@ -7,6 +7,11 @@ const HealthProgram = require('../models/HealthProgram');
 router.post('/', async (req, res) => {
   const { name, age, email, programIds } = req.body;
 
+  // Validate inputs first
+  if (!name || !age || !email || !programIds || programIds.length === 0) {
+    return res.status(400).json({ message: 'Name, age, email, and at least one program are required' });
+  }
+
   try {
     // Find all programs by their IDs
     const programs = await HealthProgram.find({ '_id': { $in: programIds } });
@@ -52,10 +57,14 @@ router.put('/:email/enroll', async (req, res) => {
     // Find programs to enroll the client into
     const programs = await HealthProgram.find({ '_id': { $in: programIds } });
 
-    // Add programs to client's enrolled programs
-    client.programs.push(...programs);
-    await client.save();
+    // Prevent duplicate enrollments
+    programs.forEach((program) => {
+      if (!client.programs.includes(program._id)) {
+        client.programs.push(program._id);
+      }
+    });
 
+    await client.save();
     res.json(client);
   } catch (error) {
     res.status(400).json({ message: error.message });
