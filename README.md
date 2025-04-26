@@ -37,8 +37,3 @@ Node.js + Express + MongoDB backend for managing health programs and clients.
 | POST   | /api/clients | Register a client |
 | GET    | /api/clients/:email | Get client by email |
 | PUT    | /api/clients/:email/enroll | Enroll client in programs |
-
-
----
-
-Would you also like an even *ultra-minimal* version (literally 5 lines)? 🚀
